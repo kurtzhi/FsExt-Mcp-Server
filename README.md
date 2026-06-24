@@ -1,8 +1,8 @@
-# FsExt\-MCP\-Server
+# FsExt\-MCP\-Server\-Python
 
 ## Overview
 
-**FsExt\-MCP\-Server** is a feature\-rich, secure, and high\-performance file system operation server implemented for the **Model Context Protocol \(MCP\)**\. It provides AI clients and MCP integrators with a complete set of file system, image processing, and OCR capabilities through standardized MCP tools\.
+**FsExt\-MCP\-Server\-Python** is a feature\-rich, secure, and high\-performance file system operation server implemented for the **Model Context Protocol \(MCP\)**\. It provides AI clients and MCP integrators with a complete set of file system, image processing, and OCR capabilities through standardized MCP tools\.
 
 The server focuses on **security controllability** and **large\-file operation compatibility**, solving common pain points of basic MCP file tools such as insufficient permissions control, single function, and poor large\-file processing performance\.
 
