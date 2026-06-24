@@ -2,9 +2,7 @@
 
 ## Overview
 
-**FsExt-MCP-Server (Python)** is a feature-rich, secure, and high-performance file system operation server implemented for the **Model Context Protocol (MCP)**. It provides AI clients and MCP integrators with a complete set of file system, image processing, and OCR capabilities through standardized MCP tools.
-
-The server focuses on **security controllability** and **large-file operation compatibility**, solving common pain points of basic MCP file tools such as insufficient permissions control, single function, and poor large-file processing performance.
+A full-featured secure MCP server for local file system operations, with built-in image processing, OCR and media tools.
 
 ### Core Features
 
@@ -22,13 +20,95 @@ The server focuses on **security controllability** and **large-file operation co
 
 - **Multi-Transport Support**: Compatible with official standard MCP transports: `stdio` (local client integration), `sse` (lightweight remote stream), `http` (standard bidirectional remote streaming transport).
 
-## Installation
+## Quick Start: Run directly with uvx (No pre-installation required)
+`uvx` automatically pulls the published PyPI package and launches an isolated runtime environment, no need to manually install dependencies or create virtual environments.
 
-### Prerequisites
+### 1. Basic uvx startup commands
+#### Short command (recommended)
+```bash
+# Default stdio mode, full file access without directory lock
+uvx fsext-mcp-server
 
-- Python ≥ 3.10
-- FFmpeg (system global installation, required for media-related dependencies)
-- Tesseract OCR (optional, for image text extraction)
+# Lock all file operations to a specified workspace (security recommended)
+uvx fsext-mcp-server --lock-root /your/workspace
+```
+
+#### Full complete command
+```bash
+# Stdio locked workspace
+uvx fsext-mcp-server --transport stdio --lock-root /your/workspace
+
+# Remote SSE service
+uvx fsext-mcp-server --transport sse --host 0.0.0.0 --port 8000 --lock-root /your/workspace
+
+# Streamable HTTP remote service
+uvx fsext-mcp-server --transport http --host 0.0.0.0 --port 8000 --lock-root /your/workspace
+```
+
+### 2. Call FsExt tools via LLM framework
+No prior installation needed for the machine environment; `uvx` will dynamically install and run the server when the LLM client initiates a connection.
+
+#### Client config example (Claude Desktop / Cursor MCP json)
+```json
+{
+  "mcpServers": {
+    "fsext": {
+      "command": "uvx",
+      "args": [
+        "fsext-mcp-server",
+        "--lock-root",
+        "/your/workspace"
+      ],
+      "env": {"PYTHONUTF8": "1"}
+    }
+  }
+}
+```
+
+#### LangChain / LangGraph pseudo-code snippet (core logic only)
+Due to session lifecycle compatibility limits of `langchain-mcp-adapters`, the complete stable runtime code requires extra long-connection adaptation. Below is the standard core calling logic for reference:
+```python
+# Core config: connect to FsExt MCP via uvx stdio
+server_config = {
+    "fsext": {
+        "transport": "stdio",
+        "command": "uvx",
+        "args": ["fsext-mcp-server", "--lock-root", r"/your/workspace"],
+        "env": {"PYTHONUTF8": "1"}
+    }
+}
+
+# Load MCP file tools
+client = MultiServerMCPClient(server_config)
+async with client.session("fsext") as session:
+    mcp_tools = await load_mcp_tools(session)
+
+# Bind tools to LLM, build chat workflow
+llm = ChatOpenAI(base_url="your-local-llm-api").bind_tools(mcp_tools)
+```
+
+## Traditional installation & launch via pip
+### Install package
+```bash
+pip install fsext-mcp-server
+```
+
+### Launch commands after pip install
+```bash
+# Default stdio mode
+fsext-mcp-server
+# Or use short command
+fsext
+
+# Lock workspace
+fsext --lock-root /your/workspace
+
+# Remote SSE
+fsext --transport sse --port 8000
+```
+
+---
+
 
 ### Install Dependencies
 

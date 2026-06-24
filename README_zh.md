@@ -14,7 +14,96 @@
 - **严格工作空间安全锁定**：提供`--lock-root`根目录锁定参数，所有文件/目录操作强制限定在指定根目录内，禁止跨目录越权访问
 - **多传输协议兼容**：支持MCP官方标准传输通道：`stdio`（本地客户端对接）、`sse`（轻量远程长流）、`http`（标准双向远程流传输）
 
-## 安装教程
+## 快速上手
+
+
+### 1. uvx 啟動指令 （無需預先安裝）
+uvx 會自動拉取已發布到PyPI的安裝包，獨立隔離運行環境，無需手動配置虛擬環境與依賴。
+#### 簡寫推薦用法
+```bash
+# 默認stdio傳輸，無目錄鎖，擁有全部文件訪問權限
+uvx fsext-mcp-server
+
+# 安全推薦：限定所有文件操作僅能訪問指定文件夾
+uvx fsext-mcp-server --lock-root /你的/工程目錄
+```
+
+#### 完整可自定義長指令
+```bash
+# stdio 本地隔離目錄
+uvx fsext-mcp-server --transport stdio --lock-root /你的/工程目錄
+
+# SSE 遠程服務
+uvx fsext-mcp-server --transport sse --host 0.0.0.0 --port 8000 --lock-root /你的/工程目錄
+
+# Streamable HTTP 標準雙向遠程服務
+uvx fsext-mcp-server --transport http --host 0.0.0.0 --port 8000 --lock-root /你的/工程目錄
+```
+
+### 2. 在大模型客戶端/框架中調用
+環境無需提前安裝依賴，客戶端建立連接時uvx會自動下載並啟動服務。
+
+#### Claude Desktop / Cursor MCP 配置範例
+```json
+{
+  "mcpServers": {
+    "fsext": {
+      "command": "uvx",
+      "args": [
+        "fsext-mcp-server",
+        "--lock-root",
+        "/你的/工程目錄"
+      ],
+      "env": {"PYTHONUTF8": "1"}
+    }
+  }
+}
+```
+
+#### LangChain / LangGraph 核心偽代碼（僅關鍵片段）
+受 `langchain-mcp-adapters` 會話生命週期限制，完整穩定運行代碼需要額外長連接適配，以下為標準調用核心邏輯供參考：
+```python
+# 核心配置：透過uvx stdio連接FsExt MCP服務
+server_config = {
+    "fsext": {
+        "transport": "stdio",
+        "command": "uvx",
+        "args": ["fsext-mcp-server", "--lock-root", r"/你的/工程目錄"],
+        "env": {"PYTHONUTF8": "1"}
+    }
+}
+
+# 載入全部文件操作工具
+client = MultiServerMCPClient(server_config)
+async with client.session("fsext") as session:
+    mcp_tools = await load_mcp_tools(session)
+
+# 工具綁定大模型，搭建對話流程
+llm = ChatOpenAI(base_url="本地大模型接口地址").bind_tools(mcp_tools)
+```
+
+## 傳統 pip 安裝使用方式
+### 安裝包
+```bash
+pip install fsext-mcp-server
+```
+
+### 安裝完成後啟動指令
+```bash
+# 默認stdio本地模式
+fsext-mcp-server
+# 或者使用短命令
+fsext
+
+# 限定操作目錄
+fsext --lock-root /你的/工程目錄
+
+# 遠程SSE服務
+fsext --transport sse --port 8000
+```
+
+---
+
 ### 环境前置依赖
 - Python ≥ 3.10
 - FFmpeg（系统全局安装，媒体相关功能必需）
