@@ -465,4 +465,4 @@ Note: FFmpeg binaries are not bundled in this project; please follow FFmpeg's of
 
 ## Contact \& Repository
 
-GitHub: [https://github\.com/kurtzhi/FsExt\-Mcp\-Server](https://github.com/kurtzhi/FsExt-Mcp-Server)
+GitHub: [https://github\.com/kurtzhi/fsext\-mcp\-server\-python](https://github.com/kurtzhi/fsext-mcp-Server-python)
