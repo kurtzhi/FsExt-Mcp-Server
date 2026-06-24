@@ -1,5 +1,21 @@
-# SPDX-FileCopyrightText: 2026 kurtzhi
+# SPDX-FileCopyrightText: 2026 https://github.com/kurtzhi/fsext-mcp-server-python
 # SPDX-License-Identifier: Apache-2.0
+
+# Copyright 2026 https://github.com/kurtzhi/fsext-mcp-server-python
+#
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 """
 Cross-FS Module Integration Test Suite
 Standard: AWS/GCP Enterprise Integration Test Spec
@@ -9,7 +25,6 @@ Core Improvements:
 3. Independent table-style report formatter with real-time progress + final statistics
 4. Strict read-only source whitelist guard, zero write access to project src root
 """
-
 import shutil
 import tempfile
 import traceback
@@ -21,8 +36,9 @@ from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
 from typing import Any, List
+
 from fsext_mcp_server.util import (file_replace_service, file_read_service, file_write_service,
-                        image_service, dir_service, file_service, ocr_service, file_search_service)
+                                   image_service, dir_service, file_service, ocr_service, file_search_service)
 
 
 # ============================== GLOBAL TEST META ENUM ==============================
